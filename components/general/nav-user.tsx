@@ -135,29 +135,6 @@ export function NavUser() {
                                 </div>
                             </div>
                         </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem onClick={() => router.push("/dashboard/upgrade")}>
-                                <Sparkles className="mr-2 h-4 w-4" />
-                                Upgrade to Pro
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem onClick={() => router.push("/dashboard/account")}>
-                                <BadgeCheck className="mr-2 h-4 w-4" />
-                                Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push("/dashboard/billing")}>
-                                <CreditCard className="mr-2 h-4 w-4" />
-                                Billing
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push("/dashboard/notifications")}>
-                                <Bell className="mr-2 h-4 w-4" />
-                                Notifications
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={handleSignOut}>
                             <LogOut className="mr-2 h-4 w-4" />
                             Log out
