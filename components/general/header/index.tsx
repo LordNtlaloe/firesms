@@ -57,20 +57,18 @@ const Header = () => {
     return (
         <>
             <header
-                className={`header left-0 top-0 z-40 flex w-full items-center ${
-                    sticky
-                        ? "fixed z-9999 bg-white/80 shadow-sticky backdrop-blur-xs transition dark:bg-gray-dark dark:shadow-sticky-dark"
+                className={`header left-0 top-0 z-40 flex w-full items-center ${sticky
+                        ? "fixed z-9999 bg-white/80 shadow-lg backdrop-blur-sm transition dark:bg-neutral-900/80 dark:shadow-neutral-800"
                         : "absolute bg-transparent"
-                }`}
+                    }`}
             >
                 <div className="container mx-auto">
                     <div className="relative -mx-4 flex items-center justify-between">
                         <div className="w-60 max-w-full px-4 xl:mr-12">
                             <Link
                                 href="/"
-                                className={`header-logo block w-full ${
-                                    sticky ? "py-5 lg:py-2" : "py-8"
-                                }`}
+                                className={`header-logo block w-full ${sticky ? "py-5 lg:py-2" : "py-8"
+                                    }`}
                             >
                                 <h1 className="text-2xl font-extrabold">FireSMS</h1>
                             </Link>
@@ -81,31 +79,27 @@ const Header = () => {
                                     onClick={navbarToggleHandler}
                                     id="navbarToggler"
                                     aria-label="Mobile Menu"
-                                    className="absolute right-4 top-1/2 block translate-y-[-50%] rounded-lg px-3 py-1.5 ring-primary focus:ring-2 lg:hidden"
+                                    className="absolute right-4 top-1/2 block translate-y-[-50%] rounded-lg px-3 py-1.5 ring-blue-500 focus:ring-2 lg:hidden"
                                 >
                                     <span
-                                        className={`relative my-1.5 block h-0.5 w-7.5 bg-black transition-all duration-300 dark:bg-white ${
-                                            navbarOpen ? "top-1.75 rotate-45" : ""
-                                        }`}
+                                        className={`relative my-1.5 block h-0.5 w-7.5 bg-neutral-900 transition-all duration-300 dark:bg-white ${navbarOpen ? "top-1.75 rotate-45" : ""
+                                            }`}
                                     />
                                     <span
-                                        className={`relative my-1.5 block h-0.5 w-7.5 bg-black transition-all duration-300 dark:bg-white ${
-                                            navbarOpen ? "opacity-0" : ""
-                                        }`}
+                                        className={`relative my-1.5 block h-0.5 w-7.5 bg-neutral-900 transition-all duration-300 dark:bg-white ${navbarOpen ? "opacity-0" : ""
+                                            }`}
                                     />
                                     <span
-                                        className={`relative my-1.5 block h-0.5 w-7.5 bg-black transition-all duration-300 dark:bg-white ${
-                                            navbarOpen ? "-top-2 -rotate-45" : ""
-                                        }`}
+                                        className={`relative my-1.5 block h-0.5 w-7.5 bg-neutral-900 transition-all duration-300 dark:bg-white ${navbarOpen ? "-top-2 -rotate-45" : ""
+                                            }`}
                                     />
                                 </button>
                                 <nav
                                     id="navbarCollapse"
-                                    className={`navbar absolute right-0 z-30 w-62.5 rounded border-[0.5px] border-body-color/50 bg-white px-6 py-4 duration-300 dark:border-body-color/20 dark:bg-dark ${
-                                        navbarOpen
+                                    className={`navbar absolute right-0 z-30 w-62.5 rounded border-[0.5px] border-neutral-300 bg-white dark:bg-neutral-900 px-6 py-4 duration-300 dark:border-neutral-700 ${navbarOpen
                                             ? "visible top-full opacity-100"
                                             : "invisible top-[120%] opacity-0"
-                                    } lg:visible lg:static lg:w-auto lg:border-none lg:bg-transparent lg:p-0 lg:opacity-100`}
+                                        } lg:visible lg:static lg:w-auto lg:border-none lg:bg-transparent lg:p-0 lg:opacity-100 dark:lg:bg-transparent`}
                                 >
                                     <ul className="block lg:flex lg:space-x-12">
                                         {(menuData as MenuItem[]).map((menuItem, index) => (
@@ -113,11 +107,10 @@ const Header = () => {
                                                 {menuItem.path ? (
                                                     <Link
                                                         href={menuItem.path}
-                                                        className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
-                                                            pathname === menuItem.path
-                                                                ? "text-primary dark:text-white"
-                                                                : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
-                                                        }`}
+                                                        className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${pathname === menuItem.path
+                                                                ? "text-blue-600 dark:text-blue-400"
+                                                                : "text-neutral-900 hover:text-blue-600 dark:text-neutral-300 dark:hover:text-blue-400"
+                                                            }`}
                                                     >
                                                         {menuItem.title}
                                                     </Link>
@@ -125,7 +118,7 @@ const Header = () => {
                                                     <>
                                                         <p
                                                             onClick={() => handleSubmenu(index)}
-                                                            className="flex cursor-pointer items-center justify-between py-2 text-base text-dark group-hover:text-primary lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 dark:text-white/70 dark:group-hover:text-white"
+                                                            className="flex cursor-pointer items-center justify-between py-2 text-base text-neutral-900 group-hover:text-blue-600 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 dark:text-neutral-300 dark:group-hover:text-blue-400"
                                                         >
                                                             {menuItem.title}
                                                             <span className="pl-3">
@@ -140,15 +133,14 @@ const Header = () => {
                                                             </span>
                                                         </p>
                                                         <div
-                                                            className={`submenu absolute left-0 top-full hidden w-62.5 rounded-sm bg-white p-4 shadow-lg transition-[top] duration-300 group-hover:block dark:bg-dark lg:w-62.5 ${
-                                                                openIndex === index ? "block" : "hidden"
-                                                            } lg:invisible lg:block lg:opacity-0 lg:group-hover:visible lg:group-hover:top-full lg:group-hover:opacity-100`}
+                                                            className={`submenu absolute left-0 top-full hidden w-62.5 rounded-sm bg-white p-4 shadow-lg transition-[top] duration-300 group-hover:block dark:bg-neutral-900 lg:w-62.5 ${openIndex === index ? "block" : "hidden"
+                                                                } lg:invisible lg:block lg:opacity-0 lg:group-hover:visible lg:group-hover:top-full lg:group-hover:opacity-100`}
                                                         >
                                                             {menuItem.submenu?.map((submenuItem, index) => (
                                                                 <Link
                                                                     href={submenuItem.path}
                                                                     key={index}
-                                                                    className="block rounded-sm py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
+                                                                    className="block rounded-sm py-2.5 text-sm text-neutral-900 hover:text-blue-600 dark:text-neutral-300 dark:hover:text-blue-400 lg:px-3"
                                                                 >
                                                                     {submenuItem.title}
                                                                 </Link>
@@ -158,26 +150,26 @@ const Header = () => {
                                                 )}
                                             </li>
                                         ))}
-                                        
+
                                         {/* Mobile Menu Auth Links */}
-                                        <li className="block lg:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                        <li className="block lg:hidden mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
                                             <div className="flex flex-col space-y-3">
                                                 <Link
                                                     href="/auth/sign-in"
-                                                    className="flex py-2 text-base text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                                                    className="flex py-2 text-base text-neutral-900 hover:text-blue-600 dark:text-neutral-300 dark:hover:text-blue-400"
                                                     onClick={() => setNavbarOpen(false)}
                                                 >
                                                     Sign In
                                                 </Link>
                                                 <Link
                                                     href="/auth/sign-up"
-                                                    className="flex py-2 text-base text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                                                    className="flex py-2 text-base text-neutral-900 hover:text-blue-600 dark:text-neutral-300 dark:hover:text-blue-400"
                                                     onClick={() => setNavbarOpen(false)}
                                                 >
                                                     Sign Up
                                                 </Link>
                                                 <div className="flex items-center py-2">
-                                                    <span className="text-base text-dark dark:text-white/70 mr-3">Theme:</span>
+                                                    <span className="text-base text-neutral-900 dark:text-neutral-300 mr-3">Theme:</span>
                                                     <ThemeToggler />
                                                 </div>
                                             </div>
@@ -188,13 +180,13 @@ const Header = () => {
                             <div className="hidden lg:flex items-center justify-end mx-16 lg:pr-0">
                                 <Link
                                     href="/auth/sign-in"
-                                    className="px-7 py-3 text-base font-medium text-dark hover:opacity-70 dark:text-white bg-blue-600 mx-4 rounded-2xl"
+                                    className="px-7 py-3 text-base font-medium text-white hover:opacity-70 bg-blue-600 mx-4 rounded-2xl"
                                 >
                                     Sign In
                                 </Link>
                                 <Link
                                     href="/auth/sign-up"
-                                    className="rounded-2xl border-blue-600 border-2 px-8 py-3 text-base font-medium text-white shadow-btn transition duration-300 ease-in-up hover:bg-primary/90 hover:shadow-btn-hover md:px-9 lg:px-6 xl:px-9"
+                                    className="rounded-2xl border-blue-600 border-2 px-8 py-3 text-base font-medium text-white shadow-lg transition duration-300 ease-in-out hover:bg-blue-600/90 hover:shadow-xl md:px-9 lg:px-6 xl:px-9"
                                 >
                                     Sign Up
                                 </Link>
