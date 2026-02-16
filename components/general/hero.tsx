@@ -11,23 +11,25 @@ const Hero = () => {
                     <div className="flex flex-wrap">
                         <div className="w-full px-4">
                             <div className="mx-auto max-w-200 text-center">
-                                <h1 className="mb-5 text-9xl font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
+                                <h1 className="mb-5 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold leading-tight text-black dark:text-white">
                                     FireSMS
-                                    The Best SMS API platform
+                                    <span className="block mt-2 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl">
+                                        The Best SMS API platform
+                                    </span>
                                 </h1>
-                                <p className="mb-12 text-base leading-relaxed! text-body-color dark:text-body-color-dark sm:text-lg md:text-xl">
+                                <p className="mb-12 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed! text-body-color dark:text-body-color-dark">
                                     FireSMS is a cloud platform that enables businesses to communicate with their clients using our API
                                 </p>
                                 <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                                     <Link
                                         href="/auth/sign-in"
-                                        className=" border-white border-2 rounded-2xl px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-primary/80"
+                                        className="border-white border-2 rounded-2xl px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold text-white duration-300 ease-in-out hover:bg-primary/80"
                                     >
                                         Create Account
                                     </Link>
                                     <Link
                                         href="/docs"
-                                        className="inline-block rounded-2xl bg-black px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-black/90 dark:bg-white/10 dark:text-white dark:hover:bg-white/5"
+                                        className="inline-block rounded-2xl bg-black px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold text-white duration-300 ease-in-out hover:bg-black/90 dark:bg-white/10 dark:text-white dark:hover:bg-white/5"
                                     >
                                         Documentation
                                     </Link>
