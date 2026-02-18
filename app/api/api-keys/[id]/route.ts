@@ -5,11 +5,13 @@ import { headers } from "next/headers";
 
 export async function DELETE(
     _request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    await deleteApiKey(params.id, session.user.id);
+    const { id } = await params;
+
+    await deleteApiKey(id, session.user.id);
     return Response.json({ success: true });
 }

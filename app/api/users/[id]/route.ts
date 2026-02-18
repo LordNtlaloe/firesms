@@ -12,23 +12,25 @@ async function requireAdmin() {
 
 export async function GET(
     _request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await requireAdmin();
     if (!session) return Response.json({ error: "Forbidden" }, { status: 403 });
 
+    const { id } = await params;
+
     const [user, messages, keys] = await Promise.all([
         db.execute({
             sql: "SELECT id, name, email, role, created_at FROM user WHERE id = ?",
-            args: [params.id],
+            args: [id],
         }),
         db.execute({
             sql: "SELECT * FROM messages WHERE user_id = ? ORDER BY created_at DESC LIMIT 20",
-            args: [params.id],
+            args: [id],
         }),
         db.execute({
             sql: "SELECT id, name, last_used_at, created_at FROM api_keys WHERE user_id = ?",
-            args: [params.id],
+            args: [id],
         }),
     ]);
 
@@ -45,10 +47,12 @@ export async function GET(
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await requireAdmin();
     if (!session) return Response.json({ error: "Forbidden" }, { status: 403 });
+
+    const { id } = await params;
 
     const { role } = await request.json();
     const validRoles = ["user", "admin"];
@@ -56,14 +60,13 @@ export async function PATCH(
         return Response.json({ error: "Invalid role" }, { status: 400 });
     }
 
-    // Prevent admin from demoting themselves
-    if (params.id === session.user.id && role !== "admin") {
+    if (id === session.user.id && role !== "admin") {
         return Response.json({ error: "Cannot demote yourself" }, { status: 400 });
     }
 
     await db.execute({
         sql: "UPDATE user SET role = ? WHERE id = ?",
-        args: [role, params.id],
+        args: [role, id],
     });
 
     return Response.json({ success: true });
@@ -71,19 +74,20 @@ export async function PATCH(
 
 export async function DELETE(
     _request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await requireAdmin();
     if (!session) return Response.json({ error: "Forbidden" }, { status: 403 });
 
-    if (params.id === session.user.id) {
+    const { id } = await params;
+
+    if (id === session.user.id) {
         return Response.json({ error: "Cannot delete yourself" }, { status: 400 });
     }
 
-    // Cascade deletes messages and api_keys via FK constraints
     await db.execute({
         sql: "DELETE FROM user WHERE id = ?",
-        args: [params.id],
+        args: [id],
     });
 
     return Response.json({ success: true });
