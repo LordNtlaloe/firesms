@@ -9,6 +9,7 @@ import {
     IconUser,
     IconFileText,
     IconInnerShadowTop,
+    IconUsersGroup,
 } from "@tabler/icons-react"
 import {
     Sidebar,
@@ -27,37 +28,6 @@ import { useTheme } from "next-themes"
 import { NavUser } from "./nav-user"
 import { useSession } from "@/lib/auth-client"
 
-// Simplified navigation items
-const data = {
-    navMain: [
-        {
-            title: "Dashboard",
-            url: "/dashboard",
-            icon: IconDashboard,
-        },
-        {
-            title: "API Keys",
-            url: "/dashboard/api-keys",
-            icon: IconKey,
-        },
-        {
-            title: "Account Billing",
-            url: "/dashboard/billing",
-            icon: IconCreditCard,
-        },
-        {
-            title: "Profile",
-            url: "/dashboard/profile",
-            icon: IconUser,
-        },
-        {
-            title: "Documentation",
-            url: "/dashboard/docs",
-            icon: IconFileText,
-        },
-    ],
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { theme } = useTheme()
     const pathname = usePathname()
@@ -67,6 +37,54 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const isActive = (url: string) => {
         return pathname === url || pathname?.startsWith(url + "/")
     }
+
+    // Filter navigation items based on user role
+    const getNavItems = () => {
+        const baseItems = [
+            {
+                title: "Dashboard",
+                url: "/dashboard",
+                icon: IconDashboard,
+            },
+            {
+                title: "API Keys",
+                url: "/api-keys",
+                icon: IconKey,
+            },
+            {
+                title: "Account Billing",
+                url: "/billing",
+                icon: IconCreditCard,
+            },
+            {
+                title: "Profile",
+                url: "/profile",
+                icon: IconUser,
+            },
+            {
+                title: "Documentation",
+                url: "/docs",
+                icon: IconFileText,
+            },
+        ];
+
+        // Add Users item only for admin users
+        if (session?.user?.role === "admin") {
+            return [
+                ...baseItems.slice(0, 1),
+                {
+                    title: "Users",
+                    url: "/users",
+                    icon: IconUsersGroup,
+                },
+                ...baseItems.slice(1)
+            ];
+        }
+
+        return baseItems;
+    };
+
+    const navItems = getNavItems();
 
     return (
         <Sidebar collapsible="offcanvas" {...props}>
@@ -93,17 +111,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            
+
             <SidebarContent>
                 {/* Main Navigation */}
                 <SidebarGroup>
                     <SidebarGroupLabel>Menu</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {data.navMain.map((item) => (
+                            {navItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton 
-                                        asChild 
+                                    <SidebarMenuButton
+                                        asChild
                                         tooltip={item.title}
                                         isActive={isActive(item.url)}
                                     >
@@ -118,7 +136,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            
+
             <SidebarFooter>
                 <NavUser />
             </SidebarFooter>

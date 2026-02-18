@@ -1,18 +1,16 @@
+// app/admin/users/create/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { signUp } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -25,53 +23,55 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+;
 import { toast } from "sonner";
 
-const registerSchema = z.object({
+const createUserSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Please enter a valid email address"),
-    password: z.string()
-        .min(8, "Password must be at least 8 characters")
-        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-        .regex(/[0-9]/, "Password must contain at least one number"),
-    confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    role: z.enum(["user", "admin", "moderator"]),
 });
 
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type CreateUserFormValues = z.infer<typeof createUserSchema>;
 
-export default function RegisterPage() {
+export default function AdminCreateUserPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
-    const form = useForm<RegisterFormValues>({
-        resolver: zodResolver(registerSchema),
+    const form = useForm<CreateUserFormValues>({
+        resolver: zodResolver(createUserSchema),
         defaultValues: {
             name: "",
             email: "",
             password: "",
-            confirmPassword: "",
+            role: "user",
         },
     });
 
-    async function onSubmit(values: RegisterFormValues) {
+    async function onSubmit(values: CreateUserFormValues) {
         setIsLoading(true);
         try {
-            await signUp.email({
-                email: values.email,
-                password: values.password,
-                name: values.name,
+            // Call your admin API to create user
+            const response = await fetch("/api/admin/users", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
             });
 
-            toast.success("Account created!", {
-                description: "Your account has been created successfully.",
+            if (!response.ok) {
+                throw new Error("Failed to create user");
+            }
+
+            toast.success("User created!", {
+                description: "User has been created successfully.",
             });
 
-            router.push("/dashboard");
+            router.push("/admin/users");
         } catch (error: any) {
-            toast.error("Registration failed", {
+            toast.error("Creation failed", {
                 description: error?.message || "Something went wrong. Please try again.",
             });
         } finally {
@@ -80,14 +80,10 @@ export default function RegisterPage() {
     }
 
     return (
-        <Card className="dark:bg-neutral-900 border-0 shadow-neutral-700">
-            <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-semibold tracking-tight">
-                    Create an account
-                </CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">
-                    Enter your information to get started
-                </CardDescription>
+        <Card>
+            <CardHeader>
+                <CardTitle>Create New User</CardTitle>
+                <CardDescription>Create a user with specific role</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -102,11 +98,10 @@ export default function RegisterPage() {
                                         <Input
                                             placeholder="John Doe"
                                             disabled={isLoading}
-                                            className="dark:bg-neutral-900 dark:border-neutral-800 border-neutral-100"
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage className="text-red-500"/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -122,11 +117,10 @@ export default function RegisterPage() {
                                             placeholder="name@example.com"
                                             type="email"
                                             disabled={isLoading}
-                                            className="dark:bg-neutral-900 dark:border-neutral-800 border-neutral-100"
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage className="text-red-500"/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -142,56 +136,24 @@ export default function RegisterPage() {
                                             placeholder="••••••••"
                                             type="password"
                                             disabled={isLoading}
-                                            className="dark:bg-neutral-900 dark:border-neutral-800 border-neutral-100"
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage className="text-red-500"/>
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="confirmPassword"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Confirm password</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="••••••••"
-                                            type="password"
-                                            disabled={isLoading}
-                                            className="dark:bg-neutral-900 dark:border-neutral-800 border-neutral-100"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage className="text-red-500"/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
 
                         <Button
                             type="submit"
-                            className="w-full bg-slate-900 text-white"
+                            className="w-full"
                             disabled={isLoading}
                         >
-                            {isLoading ? "Creating account..." : "Create account"}
+                            {isLoading ? "Creating..." : "Create User"}
                         </Button>
                     </form>
                 </Form>
             </CardContent>
-            <CardFooter className="flex justify-center pt-6">
-                <p className="text-sm text-muted-foreground">
-                    Already have an account?{" "}
-                    <Link
-                        href="/auth/sign-in"
-                        className="font-medium text-foreground underline underline-offset-4 hover:text-foreground/80"
-                    >
-                        Sign in
-                    </Link>
-                </p>
-            </CardFooter>
         </Card>
     );
 }

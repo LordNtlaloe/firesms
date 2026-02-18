@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { admin } from "better-auth/plugins";
 import { Kysely } from "kysely";
 import { LibsqlDialect } from "@libsql/kysely-libsql";
 
@@ -20,4 +21,9 @@ export const auth = betterAuth({
     },
     secret: process.env.BETTER_AUTH_SECRET!,
     baseURL: process.env.BETTER_AUTH_URL!,
+    plugins: [
+        admin({
+            defaultRole: "user",
+        })
+    ],
 });
