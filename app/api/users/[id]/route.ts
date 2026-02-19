@@ -19,9 +19,9 @@ export async function GET(
 
     const { id } = await params;
 
-    const [user, messages, keys] = await Promise.all([
+    const [userResult, messagesResult, keysResult, txResult] = await Promise.all([
         db.execute({
-            sql: "SELECT id, name, email, role, created_at FROM user WHERE id = ?",
+            sql: "SELECT id, name, email, role, createdAt FROM user WHERE id = ?",
             args: [id],
         }),
         db.execute({
@@ -32,16 +32,29 @@ export async function GET(
             sql: "SELECT id, name, last_used_at, created_at FROM api_keys WHERE user_id = ?",
             args: [id],
         }),
+        db.execute({
+            sql: "SELECT id, credits, amount, payment_mode, transaction_date, created_at FROM credit_transactions WHERE user_id = ? ORDER BY transaction_date DESC",
+            args: [id],
+        }),
     ]);
 
-    if (!user.rows[0]) {
+    if (!userResult.rows[0]) {
         return Response.json({ error: "Not found" }, { status: 404 });
     }
 
+    const totalPurchased = txResult.rows.reduce((sum, tx) => sum + Number(tx.credits), 0);
+    const totalUsed = messagesResult.rows.filter((m) => m.status === "sent").length;
+
     return Response.json({
-        user: user.rows[0],
-        messages: messages.rows,
-        apiKeys: keys.rows,
+        user: userResult.rows[0],
+        credits: {
+            total_purchased: totalPurchased,
+            total_used: totalUsed,
+            remaining: totalPurchased - totalUsed,
+        },
+        creditTransactions: txResult.rows,
+        messages: messagesResult.rows,
+        apiKeys: keysResult.rows,
     });
 }
 

@@ -20,14 +20,13 @@ export async function GET() {
                 u.name,
                 u.email,
                 u.role,
-                u.created_at,
                 COUNT(DISTINCT m.id) as total_messages,
                 COUNT(DISTINCT k.id) as total_api_keys
               FROM user u
               LEFT JOIN messages m ON m.user_id = u.id
               LEFT JOIN api_keys k ON k.user_id = u.id
               GROUP BY u.id
-              ORDER BY u.created_at DESC`,
+              ORDER BY u.id DESC`,
         args: [],
     });
 

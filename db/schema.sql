@@ -32,3 +32,14 @@ CREATE TABLE IF NOT EXISTS usage (
     created_at INTEGER NOT NULL DEFAULT (unixepoch()),
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS credit_transactions (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    credits INTEGER NOT NULL,
+    amount REAL NOT NULL,
+    payment_mode TEXT NOT NULL,
+    transaction_date TEXT NOT NULL,
+    created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);

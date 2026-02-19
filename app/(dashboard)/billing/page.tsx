@@ -68,7 +68,7 @@ export default function BillingPage() {
     const [starting, setStarting] = React.useState(false)
 
     const fetchBilling = React.useCallback(() => {
-        fetch("/api/billing")
+        fetch("/api/api-keys/billing")
             .then((r) => r.json())
             .then((d) => {
                 setData(d)
@@ -83,7 +83,7 @@ export default function BillingPage() {
     const startNewPeriod = async () => {
         setStarting(true)
         try {
-            const res = await fetch("/api/billing", { method: "POST" })
+            const res = await fetch("/api/api-keys/billing", { method: "POST" })
             if (!res.ok) throw new Error()
             toast.success("New billing period started")
             fetchBilling()
