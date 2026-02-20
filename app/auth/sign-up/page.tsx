@@ -1,8 +1,9 @@
-// app/admin/users/create/page.tsx
+// app/sign-up/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -13,6 +14,7 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
+    CardFooter,
 } from "@/components/ui/card";
 import {
     Form,
@@ -23,55 +25,55 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-;
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
-const createUserSchema = z.object({
+const signUpSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Please enter a valid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
-    role: z.enum(["user", "admin", "moderator"]),
+    confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
 });
 
-type CreateUserFormValues = z.infer<typeof createUserSchema>;
+type SignUpFormValues = z.infer<typeof signUpSchema>;
 
-export default function AdminCreateUserPage() {
+export default function SignUpPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
-    const form = useForm<CreateUserFormValues>({
-        resolver: zodResolver(createUserSchema),
+    const form = useForm<SignUpFormValues>({
+        resolver: zodResolver(signUpSchema),
         defaultValues: {
             name: "",
             email: "",
             password: "",
-            role: "user",
+            confirmPassword: "",
         },
     });
 
-    async function onSubmit(values: CreateUserFormValues) {
+    async function onSubmit(values: SignUpFormValues) {
         setIsLoading(true);
         try {
-            // Call your admin API to create user
-            const response = await fetch("/api/admin/users", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values),
+            const { data, error } = await authClient.signUp.email({
+                email: values.email,
+                password: values.password,
+                name: values.name,
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to create user");
+            if (error) {
+                throw new Error(error.message);
             }
 
-            toast.success("User created!", {
-                description: "User has been created successfully.",
+            toast.success("Account created!", {
+                description: "You have successfully signed up. Please sign in.",
             });
 
-            router.push("/admin/users");
+            router.push("/auth/sign-in");
         } catch (error: any) {
-            toast.error("Creation failed", {
+            toast.error("Sign up failed", {
                 description: error?.message || "Something went wrong. Please try again.",
             });
         } finally {
@@ -82,8 +84,8 @@ export default function AdminCreateUserPage() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Create New User</CardTitle>
-                <CardDescription>Create a user with specific role</CardDescription>
+                <CardTitle>Create an account</CardTitle>
+                <CardDescription>Sign up to get started</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -144,16 +146,43 @@ export default function AdminCreateUserPage() {
                             )}
                         />
 
+                        <FormField
+                            control={form.control}
+                            name="confirmPassword"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Confirm password</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="••••••••"
+                                            type="password"
+                                            disabled={isLoading}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
                         <Button
                             type="submit"
                             className="w-full"
                             disabled={isLoading}
                         >
-                            {isLoading ? "Creating..." : "Create User"}
+                            {isLoading ? "Creating account..." : "Sign up"}
                         </Button>
                     </form>
                 </Form>
             </CardContent>
+            <CardFooter className="flex justify-center">
+                <p className="text-sm text-gray-600">
+                    Already have an account?{" "}
+                    <Link href="/auth/sign-in" className="text-blue-600 hover:underline">
+                        Sign in
+                    </Link>
+                </p>
+            </CardFooter>
         </Card>
     );
 }

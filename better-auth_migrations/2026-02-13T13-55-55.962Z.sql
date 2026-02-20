@@ -39,3 +39,11 @@ create index "session_userId_idx" on "session" ("userId");
 
 create index "account_userId_idx" on "account" ("userId");
 
+create table "verification" (
+    "id" text not null primary key,
+    "identifier" text not null,
+    "value" text not null,
+    "expiresAt" date not null,
+    "createdAt" date,
+    "updatedAt" date
+);
